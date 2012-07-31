@@ -3,114 +3,11 @@ if (typeof MMui === 'undefined') MMui = {};
 // Utils are extracted from other libraries or
 // written from scratch to plug holes in browser compatibility.
 MMui.u = {
-    // From Bonzo
-    offset: function(el) {
-        // TODO: window margins
-        //
-        // Okay, so fall back to styles if offsetWidth and height are botched
-        // by Firefox.
-        var width = el.offsetWidth || parseInt(el.style.width, 10),
-            height = el.offsetHeight || parseInt(el.style.height, 10),
-            doc_body = document.body,
-            top = 0,
-            left = 0;
-
-        var calculateOffset = function(el) {
-            if (el === doc_body || el === document.documentElement) return;
-            top += el.offsetTop;
-            left += el.offsetLeft;
-
-            var style = el.style.transform ||
-                el.style.WebkitTransform ||
-                el.style.OTransform ||
-                el.style.MozTransform ||
-                el.style.msTransform;
-
-            if (style) {
-                var match;
-                if (match = style.match(/translate\((.+)px, (.+)px\)/)) {
-                    top += parseInt(match[2], 10);
-                    left += parseInt(match[1], 10);
-                } else if (match = style.match(/translate3d\((.+)px, (.+)px, (.+)px\)/)) {
-                    top += parseInt(match[2], 10);
-                    left += parseInt(match[1], 10);
-                } else if (match = style.match(/matrix3d\(([\-\d,\s]+)\)/)) {
-                    var pts = match[1].split(',');
-                    top += parseInt(pts[13], 10);
-                    left += parseInt(pts[12], 10);
-                } else if (match = style.match(/matrix\(.+, .+, .+, .+, (.+), (.+)\)/)) {
-                    top += parseInt(match[2], 10);
-                    left += parseInt(match[1], 10);
-                }
-            }
-        };
-
-        calculateOffset(el);
-
-        try {
-            while (el = el.offsetParent) { calculateOffset(el); }
-        } catch(e) {
-            // Hello, internet explorer.
-        }
-
-        // Offsets from the body
-        top += doc_body.offsetTop;
-        left += doc_body.offsetLeft;
-        // Offsets from the HTML element
-        top += doc_body.parentNode.offsetTop;
-        left += doc_body.parentNode.offsetLeft;
-
-        // Firefox and other weirdos. Similar technique to jQuery's
-        // `doesNotIncludeMarginInBodyOffset`.
-        var htmlComputed = document.defaultView ?
-            window.getComputedStyle(doc_body.parentNode, null) :
-            doc_body.parentNode.currentStyle;
-        if (doc_body.parentNode.offsetTop !==
-            parseInt(htmlComputed.marginTop, 10) &&
-            !isNaN(parseInt(htmlComputed.marginTop, 10))) {
-            top += parseInt(htmlComputed.marginTop, 10);
-            left += parseInt(htmlComputed.marginLeft, 10);
-        }
-
-        return {
-            top: top,
-            left: left,
-            height: height,
-            width: width
-        };
-    },
 
     '$': function(x) {
         return (typeof x === 'string') ?
             document.getElementById(x) :
             x;
-    },
-
-    // From quirksmode: normalize the offset of an event from the top-left
-    // of the page.
-    eventoffset: function(e) {
-        var posx = 0;
-        var posy = 0;
-        if (!e) { e = window.event; }
-        if (e.pageX || e.pageY) {
-            // Good browsers
-            return {
-                x: e.pageX,
-                y: e.pageY
-            };
-        } else if (e.clientX || e.clientY) {
-            // Internet Explorer
-            return {
-                x: e.clientX,
-                y: e.clientY
-            };
-        } else if (e.touches && e.touches.length === 1) {
-            // Touch browsers
-            return {
-                x: e.touches[0].pageX,
-                y: e.touches[0].pageY
-            };
-        }
     },
 
     // Ripped from underscore.js
