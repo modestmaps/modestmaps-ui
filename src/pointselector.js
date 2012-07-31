@@ -70,7 +70,7 @@ MMui.pointselector = function() {
                 // TODO: avoid circular reference
                 locations[i].pointDiv.location = locations[i];
                 // Create this closure once per point
-                bean.add(locations[i].pointDiv, 'mouseup',
+                MM.addEvent(locations[i].pointDiv, 'mouseup',
                     (function selectPointWrap(e) {
                     var l = locations[i];
                     return function(e) {
@@ -87,7 +87,7 @@ MMui.pointselector = function() {
 
     function mouseDown(e) {
         mouseDownPoint = makePoint(e);
-        bean.add(map.parent, 'mouseup', mouseUp);
+        MM.addEvent(map.parent, 'mouseup', mouseUp);
     }
 
     // Remove the awful circular reference from locations.
@@ -134,13 +134,13 @@ MMui.pointselector = function() {
     };
 
     pointselector.add = function() {
-        bean.add(map.parent, 'mousedown', mouseDown);
+        MM.addEvent(map.parent, 'mousedown', mouseDown);
         map.addCallback('drawn', drawPoints);
         return pointselector;
     };
 
     pointselector.remove = function() {
-        bean.remove(map.parent, 'mousedown', mouseDown);
+        MM.removeEvent(map.parent, 'mousedown', mouseDown);
         map.removeCallback('drawn', drawPoints);
         for (var i = locations.length - 1; i > -1; i--) {
             pointselector.deleteLocation(locations[i]);

@@ -8,12 +8,8 @@ MMui.zoomer = function() {
     var zoomin = document.createElement('a'),
         zoomout = document.createElement('a');
 
-    function stopEvents(e) {
-        e.stop();
-    }
-
     function zIn(e) {
-        e.stop();
+        MM.cancelEvent(e);
         if (smooth && map.ease) {
             map.ease.zoom(map.zoom() + 1).run(50);
         } else {
@@ -22,7 +18,7 @@ MMui.zoomer = function() {
     }
 
     function zOut(e) {
-        e.stop();
+        MM.cancelEvent(e);
         if (smooth && map.ease) {
             map.ease.zoom(map.zoom() - 1).run(50);
         } else {
@@ -58,10 +54,14 @@ MMui.zoomer = function() {
         if (!map) return false;
         map.addCallback('drawn', updateButtons);
         zoomer.appendTo(map.parent);
-        bean.add(zoomin, 'mousedown dblclick', stopEvents);
-        bean.add(zoomout, 'mousedown dblclick', stopEvents);
-        bean.add(zoomout, 'touchstart click', zOut);
-        bean.add(zoomin, 'touchstart click', zIn);
+        MM.addEvent(zoomin, 'mousedown', MM.cancelEvent);
+        MM.addEvent(zoomin, 'dblclick', MM.cancelEvent);
+        MM.addEvent(zoomout, 'mousedown', MM.cancelEvent);
+        MM.addEvent(zoomout, 'dblclick', MM.cancelEvent);
+        MM.addEvent(zoomout, 'touchstart', zOut);
+        MM.addEvent(zoomout, 'click', zOut);
+        MM.addEvent(zoomin, 'touchstart', zIn);
+        MM.addEvent(zoomin, 'click', zIn);
         return zoomer;
     };
 
@@ -70,10 +70,14 @@ MMui.zoomer = function() {
         map.removeCallback('drawn', updateButtons);
         if (zoomin.parentNode) zoomin.parentNode.removeChild(zoomin);
         if (zoomout.parentNode) zoomout.parentNode.removeChild(zoomout);
-        bean.remove(zoomin, 'mousedown dblclick', stopEvents);
-        bean.remove(zoomout, 'mousedown dblclick', stopEvents);
-        bean.remove(zoomout, 'touchstart click', zOut);
-        bean.remove(zoomin, 'touchstart click', zIn);
+        MM.addEvent(zoomin, 'mousedown', MM.cancelEvent);
+        MM.addEvent(zoomin, 'dblclick', MM.cancelEvent);
+        MM.addEvent(zoomout, 'mousedown', MM.cancelEvent);
+        MM.addEvent(zoomout, 'dblclick', MM.cancelEvent);
+        MM.addEvent(zoomout, 'touchstart', zOut);
+        MM.addEvent(zoomout, 'click', zOut);
+        MM.addEvent(zoomin, 'touchstart', zIn);
+        MM.addEvent(zoomin, 'click', zIn);
         return zoomer;
     };
 

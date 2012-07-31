@@ -18,7 +18,7 @@ MMui.fullscreen = function() {
     // a.innerHTML = 'fullscreen';
 
     function click(e) {
-        if (e) e.stop();
+        MM.cancelEvent(e);
         if (fullscreened) {
             fullscreen.original();
         } else {
@@ -43,13 +43,13 @@ MMui.fullscreen = function() {
     // for changes, so here we save the original size of the element and
     // restore to that size on exit from fullscreen.
     fullscreen.add = function() {
-        bean.add(a, 'click', click);
+        MM.addEvent(a, 'click', click);
         map.parent.appendChild(a);
         return fullscreen;
     };
 
     fullscreen.remove = function() {
-        bean.remove(a, 'click', click);
+        MM.removeEvent(a, 'click', click);
         if (a.parentNode) a.parentNode.removeChild(a);
         return fullscreen;
     };
