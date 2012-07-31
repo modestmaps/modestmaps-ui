@@ -16,27 +16,10 @@ MMui.boxselector = function() {
         map,
         callbackManager = new MM.CallbackManager(boxselector, ['change']);
 
-    function getMousePoint(e) {
-        // start with just the mouse (x, y)
-        var point = new MM.Point(e.clientX, e.clientY);
-        // correct for scrolled document
-        point.x += document.body.scrollLeft +
-            document.documentElement.scrollLeft;
-        point.y += document.body.scrollTop +
-            document.documentElement.scrollTop;
-
-        // correct for nested offsets in DOM
-        for (var node = map.parent; node; node = node.offsetParent) {
-            point.x -= node.offsetLeft;
-            point.y -= node.offsetTop;
-        }
-        return point;
-    }
-
     function mouseDown(e) {
         if (!e.shiftKey) return;
 
-        corner = nearCorner = getMousePoint(e);
+        corner = nearCorner = MM.getMousePoint(e, map);
         horizontal = vertical = true;
 
         style.left = corner.x + 'px';
@@ -52,7 +35,7 @@ MMui.boxselector = function() {
 
     // Resize existing box
     function mouseDownResize(e) {
-        var point = getMousePoint(e),
+        var point = MM.getMousePoint(e, map),
             TL = {
                 x: parseInt(boxDiv.offsetLeft, 10),
                 y: parseInt(boxDiv.offsetTop, 10)
@@ -82,7 +65,7 @@ MMui.boxselector = function() {
     }
 
     function mouseMove(e) {
-        var point = getMousePoint(e);
+        var point = MM.getMousePoint(e, map);
         style.display = 'block';
         if (horizontal) {
             style.left = (point.x < corner.x ? point.x : corner.x) + 'px';
@@ -97,7 +80,7 @@ MMui.boxselector = function() {
     }
 
     function mouseUp(e) {
-        var point = getMousePoint(e),
+        var point = MM.getMousePoint(e, map),
             l1 = map.pointLocation( new MM.Point(
                 horizontal ? point.x : nearCorner.x,
                 vertical? point.y : nearCorner.y
@@ -121,7 +104,7 @@ MMui.boxselector = function() {
     }
 
     function mouseMoveCursor(e) {
-        changeCursor(getMousePoint(e), boxDiv);
+        changeCursor(MM.getMousePoint(e, map), boxDiv);
     }
 
     // Set resize cursor if mouse is on edge
