@@ -18,30 +18,6 @@ MMui.pointselector = function() {
         callbackManager = new MM.CallbackManager(pointselector, ['change']),
         locations = [];
 
-    // Create a `MM.Point` from a screen event, like a click.
-    function makePoint(e) {
-        var coords = MMui.u.eventoffset(e);
-        var point = new MM.Point(coords.x, coords.y);
-        // correct for scrolled document
-
-        // and for the document
-        var body = {
-            x: parseFloat(MM.getStyle(document.documentElement, 'margin-left')),
-            y: parseFloat(MM.getStyle(document.documentElement, 'margin-top'))
-        };
-
-        if (!isNaN(body.x)) point.x -= body.x;
-        if (!isNaN(body.y)) point.y -= body.y;
-
-        // TODO: use MMui.util.offset
-        // correct for nested offsets in DOM
-        for (var node = map.parent; node; node = node.offsetParent) {
-            point.x -= node.offsetLeft;
-            point.y -= node.offsetTop;
-        }
-        return point;
-    }
-
     // Currently locations in this control contain circular references to elements.
     // These can't be JSON encoded, so here's a utility to clean the data that's
     // spit back.
@@ -86,7 +62,7 @@ MMui.pointselector = function() {
     }
 
     function mouseDown(e) {
-        mouseDownPoint = makePoint(e);
+        mouseDownPoint = MM.getMousePoint(e, map);
         MM.addEvent(map.parent, 'mouseup', mouseUp);
     }
 
@@ -94,7 +70,7 @@ MMui.pointselector = function() {
     // TODO: This function should be made unnecessary by not having it.
     function mouseUp(e) {
         if (!mouseDownPoint) return;
-        mouseUpPoint = makePoint(e);
+        mouseUpPoint = MM.getMousePoint(e, map);
         if (MM.Point.distance(mouseDownPoint, mouseUpPoint) < tolerance) {
             pointselector.addLocation(map.pointLocation(mouseDownPoint));
             callbackManager.dispatchCallback('change', cleanLocations(locations));
