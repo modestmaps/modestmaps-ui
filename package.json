@@ -1,0 +1,16 @@
+{
+  "author": "MapBox",
+  "name": "modestmaps-ui",
+  "description": "UI components for ModestMaps",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/modestmaps/modestmaps-ui.git"
+  },
+  "devDependencies": {
+      "uglify-js": "1.3.x"
+  },
+  "engines": {
+    "node": "*"
+  }
+}

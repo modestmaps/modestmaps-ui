@@ -1,4 +1,4 @@
-MMui = MMui || {};
+if (typeof MMui === 'undefined') MMui = {};
 
 MMui.hash = function() {
     var map,
